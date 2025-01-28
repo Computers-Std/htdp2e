@@ -1,0 +1,110 @@
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname Ex-179) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+
+;; Exercise 179. Design the functions
+
+(define-struct editor [pre post])
+; An Editor is a Structure:
+; (make-editor Lo1S lo1S)
+
+; An Lo1S is one of:
+; - '()
+; - (cons 1String Lo1S)
+
+;; -- Examples
+(define good
+  (cons "g" (cons "o" (cons "o" (cons "d" '())))))
+(define all
+  (cons "a" (cons "l" (cons "l" '()))))
+(define lla
+  (cons "l" (cons "l" (cons "a" '()))))
+
+;; data example 1:
+;; (make-editor all good)
+;; data example 2:
+;; (make-editor lla good)
+
+; Editor -> Editor
+; moves the cursor position one 1String left,
+; if possible
+(check-expect
+ (editor-lft (make-editor all good))
+ (make-editor (cons "a" (cons "l" '()))
+              (cons "l" (cons "g" (cons "o" (cons "o" (cons "d" '())))))))
+(check-expect (editor-lft (make-editor (cons "" '()) (cons "a" '())))
+              (make-editor '() (cons "" (cons "a" '()))))
+(check-expect (editor-lft (make-editor '() (cons "" (cons "a" '()))))
+              (make-editor '() (cons "" (cons "a" '()))))
+(define (editor-lft ed)
+  (if (empty? (editor-pre ed))
+      ed
+      (make-editor (rev (rest (rev (editor-pre ed))))
+                   (cons (first (rev (editor-pre ed)))
+                         (editor-post ed)))))
+
+; Editor -> Editor
+; moves the cursor position one 1String right,
+; if possible
+(check-expect
+ (editor-rgt (make-editor all good))
+ (make-editor (cons "a" (cons "l" (cons "l" (cons "g" '()))))
+              (cons "o" (cons "o" (cons "d" '())))))
+(check-expect (editor-rgt (make-editor (cons "" '()) (cons "a" '())))
+              (make-editor (cons "" (cons "a" '())) '()))
+(check-expect (editor-rgt (make-editor (cons "" (cons "a" '())) '()))
+              (make-editor (cons "" (cons "a" '())) '()))
+(define (editor-rgt ed)
+  (if (empty? (editor-post ed))
+      ed
+      (make-editor (rev (cons (first (editor-post ed))
+                              (rev (editor-pre ed))))
+                   (rest (editor-post ed)))))
+(check-expect
+ (editor-rgt2 (make-editor all good))
+ (make-editor (cons "a" (cons "l" (cons "l" (cons "g" '()))))
+              (cons "o" (cons "o" (cons "d" '())))))
+(check-expect (editor-rgt2 (make-editor (cons "" (cons "a" '())) '()))
+              (make-editor (cons "" (cons "a" '())) '()))
+(define (editor-rgt2 ed)
+  (if (empty? (editor-post ed))
+      ed
+      (make-editor (add-to-end (editor-pre ed) (first (editor-post ed)))
+                   (rest (editor-post ed)))))
+
+; Editor -> Editor
+; deletes a 1String to the left of the cursor,
+; if possible
+(check-expect
+ (editor-del (make-editor all good))
+ (make-editor (cons "a" (cons "l" '()))
+              (cons "g" (cons "o" (cons "o" (cons "d" '()))))))
+(check-expect (editor-del (make-editor (cons "" '()) (cons "a" '())))
+              (make-editor '() (cons "a" '())))
+(check-expect (editor-del (make-editor '() (cons "a" '())))
+              (make-editor '() (cons "a" '())))
+(define (editor-del ed)
+  (if (empty? (editor-pre ed))
+      ed
+      (make-editor (rev (rest (rev (editor-pre ed))))
+                                           (editor-post ed))))
+
+;; ----- Auxiliary Funtions
+; Lo1S -> Lo1S
+; produces a reverse version of the given list
+(check-expect (rev (cons "a" (cons "b" (cons "c" '()))))
+              (cons "c" (cons "b" (cons "a" '()))))
+(define (rev l)
+  (cond
+    [(empty? l) '()]
+    [else (add-to-end (rev (rest l))
+                      (first l))]))
+
+; Lo1S 1String -> Lo1S
+; create a new list by adding s to the end of l
+(check-expect (add-to-end (cons "c" (cons "b" '())) "a")
+              (cons "c" (cons "b" (cons "a" '()))))
+
+(define (add-to-end l s)
+  (cond
+    [(empty? l) (cons s '())]
+    [else (cons (first l)
+                (add-to-end (rest l) s))]))
