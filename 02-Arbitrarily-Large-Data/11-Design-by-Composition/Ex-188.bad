@@ -1,0 +1,78 @@
+#reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname Ex-188) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+;; For
+;; DrRacket
+
+;; Exercise 188. Design a program that sorts lists of emails by date:
+
+(define-struct email [from date message])
+; An Email Message is a structure:
+;   (make-email String Number String)
+; interpretation (make-email f d m) represents text m
+; sent by f, d seconds after the beginning of time
+
+(define-struct date [y m d])
+; A Date is a Structure:
+; (make-date yyyy mm dd)
+; interpretation (make-date y m d) represent year y
+; month m, day d
+
+; List-of-dates -> List-of-dates
+; produces a sorted list of date from to newest to oldest
+(define (sort-date> lod)
+  (cond
+    [(empty? lod) '()]
+    [(cons? lod) (sort-y> (sort-m> (sort-d> lod)))]))
+
+
+;; Sort by Year (y)
+(define (sort-y> lod)
+  (cond
+    [(empty? lod) '()]
+    [(cons? lod) (insert-y (first lod)
+                           (sort-y> (rest lod)))]))
+; Date List-of-dates -> List-of-dates
+; inserts Date in the sorted List-of-dates according to the year of date
+(define (insert-y d lod)
+  (cond
+    [(empty? lod) (cons d '())]
+    [else (if (>= (date-y d) (date-y (first lod)))
+              (cons d lod)
+              (cons (first lod) (insert-y d (rest lod))))]))
+
+;; Sort by Month (m)
+(define (sort-m> lod)
+  (cond
+    [(empty? lod) '()]
+    [(cons? lod) (insert-m (first lod)
+                           (sort-m> (rest lod)))]))
+; Date List-of-dates -> List-of-dates
+; inserts Date in the sorted List-of-dates according to the Month of date
+(define (insert-m d lod)
+  (cond
+    [(empty? lod) (cons d '())]
+    [else (if (>= (date-m d) (date-m (first lod)))
+              (cons d lod)
+              (cons (first lod) (insert-m d (rest lod))))]))
+
+;; Sort by Day (d)
+(define (sort-d> lod)
+  (cond
+    [(empty? lod) '()]
+    [(cons? lod) (insert-d (first lod)
+                           (sort-d> (rest lod)))]))
+; Date List-of-dates -> List-of-dates
+; inserts Date in the sorted List-of-dates according to the Day of date
+(define (insert-d d lod)
+  (cond
+    [(empty? lod) (cons d '())]
+    [else (if (>= (date-d d) (date-d (first lod)))
+              (cons d lod)
+              (cons (first lod) (insert-d d (rest lod))))]))
+
+; - Testing Area
+(define lod1 (list (make-date 2005 12 3)
+                   (make-date 1995 01 21)
+                   (make-date 2023 02 14)
+                   (make-date 2020 03 09)
+                   (make-date 2025 06 28)))
+(define d1 (make-date 2025 01 30))
