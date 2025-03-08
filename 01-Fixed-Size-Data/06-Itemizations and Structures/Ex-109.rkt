@@ -16,20 +16,20 @@
 ;; Represents key presses.
 
 (define AA "white")
-(define BC "yellow")
+(define BB "yellow")
 (define DD "green")
 (define ER "red")
 
 ;; An FSMState is one of:
 ;; – AA
-;; – BC
+;; – BB
 ;; – DD
 ;; – ER
 ;; Represents states of the finite state machine with
 ;; each state reached in a particular order on these events:
 ;; - AA on the initial "a" key press,
 ;; followed by
-;; - BC on any number of "b" and "c" key presses,
+;; - BB on any number of "b" and "c" key presses,
 ;; - DD on "d" key press;
 ;; - and ER on not accepted key press.
 ;; The finite state machine with these states can be represented
@@ -41,7 +41,7 @@
 ;; FSMState -> Image
 ;; Renders an image corresponding to the current world state.
 (check-expect (render AA) (rectangle WIDTH HEIGHT "solid" "white"))
-(check-expect (render BC) (rectangle WIDTH HEIGHT "solid" "yellow"))
+(check-expect (render BB) (rectangle WIDTH HEIGHT "solid" "yellow"))
 (check-expect (render DD) (rectangle WIDTH HEIGHT "solid" "green"))
 (check-expect (render ER) (rectangle WIDTH HEIGHT "solid" "red"))
 (define (render state)
@@ -49,19 +49,19 @@
 
 ;; FSMState KeyEvent -> FSMState
 ;; Changes state of the finite state machine on a key press.
-(check-expect (input-state AA "a") BC)
+(check-expect (input-state AA "a") BB)
 (check-expect (input-state AA "b") ER)
-(check-expect (input-state BC "b") BC)
-(check-expect (input-state BC "c") BC)
-(check-expect (input-state BC "d") DD)
-(check-expect (input-state BC "a") ER)
+(check-expect (input-state BB "b") BB)
+(check-expect (input-state BB "c") BB)
+(check-expect (input-state BB "d") DD)
+(check-expect (input-state BB "a") ER)
 (define (input-state s key)
   (cond
-    [(or (string=? s AA) (string=? s ER))
-     (if (key=? key "a") BC ER)]
-    [(or (string=? s BC) (string=? s ER))
+    [(string=? s AA)
+     (if (key=? key "a") BB ER)]
+    [(string=? s BB)
      (cond
-       [(or (key=? key "b") (key=? key "c")) BC]
+       [(or (key=? key "b") (key=? key "c")) BB]
        [(key=? key "d") DD]
        [else ER])]
     [else s]))
@@ -71,4 +71,5 @@
   (big-bang s
             [to-draw render]
             [on-key input-state]))
-;; Usage: (fsm AA)
+;; Usage:
+;; (fsm AA)

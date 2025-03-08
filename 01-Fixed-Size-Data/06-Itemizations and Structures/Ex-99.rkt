@@ -1,4 +1,8 @@
-#reader(lib "htdp-beginner-reader.ss" "lang")((modname Ex-99) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+#reader
+(lib "htdp-beginner-reader.ss" "lang")
+((modname Ex-99) (read-case-sensitive #t)
+                 (teachpacks ())
+                 (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 
 (require 2htdp/image)
 (require 2htdp/universe)
