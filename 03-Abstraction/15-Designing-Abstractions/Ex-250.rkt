@@ -2,6 +2,10 @@
 ;; For
 ;; DrRacket
 
+;; Exercise 250. Design tabulate, which is the abstraction of the two
+;; functions in figure 92. When tabulate is properly designed, use it
+;; to define a tabulation function for sqr and tan.
+
 ; Number Operation -> [List-of Number]
 ; tabulates OPERATION between n and 0 (incl.) in a list
 (define (tabulate n op)

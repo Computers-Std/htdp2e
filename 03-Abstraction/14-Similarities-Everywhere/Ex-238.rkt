@@ -47,7 +47,7 @@
 
 ; Nelon -> Number
 ; gives the smalles/largest number from the list
-;; (check-expect (extract < l1) (inf l1))
+(check-expect (extract-2 min l1) (inf l1))
 (define (extract-2 R l)
   (cond
     [(empty? (rest l))

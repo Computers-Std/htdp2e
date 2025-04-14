@@ -49,7 +49,7 @@
      (append (list (append pre (list l) post))
              (in-ew l (append pre (list (first post))) (rest post)))]))
 
-; List-of-words -> List-of-words
+; 1String List-of-words -> List-of-words
 ; like in-ew for a List-of-words
 ; in-ew-iaw -> insert-everywhere-in-all-words
 (check-expect (in-ew-iaw "c" (list (list "t" "a") (list "a" "t")))
@@ -76,7 +76,6 @@
 ; Lo1S 1String -> Lo1S
 ; create a new list by adding s to the end of l
 (check-expect (add-to-end (cons "c" (cons "b" '())) "a") (cons "c" (cons "b" (cons "a" '()))))
-
 (define (add-to-end l s)
   (cond
     [(empty? l) (cons s '())]
