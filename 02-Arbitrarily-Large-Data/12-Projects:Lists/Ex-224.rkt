@@ -1,15 +1,12 @@
-#reader
-(lib "htdp-beginner-abbr-reader.ss" "lang")
-((modname Ex-224) (read-case-sensitive #t)
-                  (teachpacks ())
-                  (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+#lang htdp/bsl+
+
 ;; For
 ;; DrRacket
 (require 2htdp/image)
 (require 2htdp/universe)
 ;; Constants
 (define WIDTH 250)
-(define HEIGHT 250)                     ; 500
+(define HEIGHT 250) ; 500
 (define BACKGROUND (empty-scene WIDTH HEIGHT "white"))
 
 (define UFO-HEIGHT 20)
@@ -81,14 +78,9 @@
 ; (make-game ufo tank)
 
 (define INIT-STATE
-  (make-game
-   (make-ufo UFO-START-X UFO-START-Y '())
-   (make-tank TANK-START-X TANK-SPEED '())))
+  (make-game (make-ufo UFO-START-X UFO-START-Y '()) (make-tank TANK-START-X TANK-SPEED '())))
 
-(define TEST-AIM
-  (make-game
-   (make-ufo 10 20 '())
-   (make-tank 28 (- 0 TANK-SPEED) '())))
+(define TEST-AIM (make-game (make-ufo 10 20 '()) (make-tank 28 (- 0 TANK-SPEED) '())))
 
 (define UFO-LAUNCHED (make-ufo 20 100 (list (make-posn 40 120))))
 
@@ -98,15 +90,10 @@
 (define TEST-LAUNCHED (make-game UFO-LAUNCHED TANK-LAUNCHED))
 
 (define TEST-HIT
-  (make-game
-   (make-ufo 20 100 '())
-   (make-tank 100 TANK-SPEED (list (make-posn 20 103)))))
+  (make-game (make-ufo 20 100 '()) (make-tank 100 TANK-SPEED (list (make-posn 20 103)))))
 
 (define TEST-LANDED
-  (make-game
-   (make-ufo 70 UFO-LAND-Y '())
-   (make-tank 28 (- 0 TANK-SPEED) (list (make-posn 32 32)))))
-
+  (make-game (make-ufo 70 UFO-LAND-Y '()) (make-tank 28 (- 0 TANK-SPEED) (list (make-posn 32 32)))))
 
 (define (tank-render tank scene)
   (place-images (make-list (length (tank-missiles tank)) TANK-MISSILE)
@@ -121,9 +108,7 @@
 ; GameState -> Image
 ; Tank + UFO + Missiles + BACKGROUND
 (define (game-render gs)
-  (tank-render (game-tank gs)
-               (ufo-render (game-ufo gs)
-                           BACKGROUND)))
+  (tank-render (game-tank gs) (ufo-render (game-ufo gs) BACKGROUND)))
 
 ; Number -> Number
 ; Random x-coordinate for ufo
