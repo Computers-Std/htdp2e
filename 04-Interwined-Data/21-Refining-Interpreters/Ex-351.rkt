@@ -81,3 +81,30 @@
 (check-expect (interpreter-expr '(+ 12 23)) 35)
 (define (interpreter-expr sexp)
   (eval-expression (parse sexp)))
+
+
+;; ; -- Parsing --
+
+;; ; S-expr -> BSL-expr
+;; (define (parse s)
+;;   (cond
+;;     [(atom? s) (parse-atom s)]
+;;     [else (parse-sl s)]))
+
+;; ; SL -> BSL-expr
+;; (define (parse-sl s)
+;;   (if (and (= (length s) 3) (symbol? (first s)))
+;;       (cond
+;;         [(symbol=? (first s) '+)
+;;          (make-add (parse (second s)) (parse (third s)))]
+;;         [(symbol=? (first s) '*)
+;;          (make-mul (parse (second s)) (parse (third s)))]
+;;         [else (error WRONG)])
+;;       (error WRONG)))
+
+;; ; Atom -> BSL-expr
+;; (define (parse-atom s)
+;;   (cond
+;;     [(number? s) s]
+;;     [(string? s) (error WRONG)]
+;;     [(symbol? s) (error WRONG)]))
