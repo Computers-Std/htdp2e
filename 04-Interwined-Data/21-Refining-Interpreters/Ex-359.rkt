@@ -67,10 +67,10 @@
     [(add? expr) (+ (eval-function* (add-left expr) da) (eval-function* (add-right expr) da))]
     [(mul? expr) (* (eval-function* (mul-left expr) da) (eval-function* (mul-right expr) da))]
     [(fun? expr)
-     (local ; Find the definition in DA
-         ((define find-def (lookup-def da (fun-name expr)))
-          ; Eval the Arg before passin into DA's definition
-          (define eval-arg (eval-function* (fun-arg expr) da))
-          ; Substitute eval-arg in Function's PARAMETER
-          (define subst-body (subst (defun-body find-def) (defun-pm find-def) eval-arg)))
+     (local (; Find the definition in DA
+             (define find-def (lookup-def da (fun-name expr)))
+             ; Eval the Arg before passin into DA's definition
+             (define eval-arg (eval-function* (fun-arg expr) da))
+             ; Substitute eval-arg in Function's PARAMETER
+             (define subst-body (subst (defun-body find-def) (defun-pm find-def) eval-arg)))
        (eval-function* subst-body da))]))
