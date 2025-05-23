@@ -8,15 +8,11 @@
 ;   (cons Symbol (cons String '()))
 
 (define a0 '((initial "X")))
-
 (define e0 '(machine))
 (define e1 `(machine ,a0))
-
 (define e2 '(machine (action)))
 (define e3 '(machine () (action))) ; should be equivalent to e2
-
 (define e4 `(machine ,a0 (action) (action)))
-; e4: <machine initial="X"><action /><action /></machine>
 
 ; Xexpr.v2 -> Symbol
 ; retrieves the name (symbol) of xe
