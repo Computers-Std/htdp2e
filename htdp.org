@@ -1,7 +1,3 @@
-* issue to lookout
-https://github.com/greghendershott/racket-mode/issues/125#issue-68735629
-
-
 * Systematic Program Design:: ~The Basic steps of a function design recipe~
 1. =From Problem Analysis to Data Definitions=
    * Identify the information that must be represented and how it is
@@ -25,6 +21,8 @@ https://github.com/greghendershott/racket-mode/issues/125#issue-68735629
      definition when the need arises--and it will arise for any
      serious program
 
+* issue to lookout
+https://github.com/greghendershott/racket-mode/issues/125#issue-68735629
 * Inspiration
  DATE: <2024-10-28 Mon>
  The preface of the book has been my motivation when I feel struck

@@ -22,8 +22,8 @@
       [else (append (for-sym (first los) lon)
                     (cross (rest los) lon))])))
 
- (define (cross-abstract los lon)
-   (foldr
+(define (cross-abstract los lon)
+  (foldr
     (lambda (s l)
       (append (map (lambda (n) (cons s (cons n '()))) lon)
               l))
