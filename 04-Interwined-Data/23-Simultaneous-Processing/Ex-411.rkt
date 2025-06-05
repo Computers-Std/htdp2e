@@ -26,11 +26,93 @@
 (define presence-content `((#true "presence") (#false "absence")))
 (define presence-db (make-db presence-schema presence-content))
 
+(define multi-presence-schema `(("Present" ,boolean?) ("Description" ,string?)))
+(define multi-presence-content
+  `((#true "presence") (#true "here") (#false "absence") (#false "there")))
+(define multi-presence-db (make-db multi-presence-schema multi-presence-content))
+
+(define school+presence-content
+  '(("Alice" 35 "presence") ("Bob" 25 "absence") ("Carol" 30 "presence") ("Dave" 32 "absence")))
+
+(define school+multi-presence-content
+  '(("Alice" 35 "presence") ("Alice" 35 "here")
+                            ("Bob" 25 "absence")
+                            ("Bob" 25 "there")
+                            ("Carol" 30 "presence")
+                            ("Carol" 30 "here")
+                            ("Dave" 32 "absence")
+                            ("Dave" 32 "there")))
+
 ; DB DB -> DB
+(check-expect (db-content (join school-db presence-db))
+              school+presence-content)
 (define (join db-1 db-2)
   (local ((define schema-1 (db-schema db-1))
           (define schema-2 (db-schema db-2))
           (define content-1 (db-content db-1))
           (define content-2 (db-content db-2))
-          )
-    ...))
+          (define (translate cell)
+            (second (assoc cell content-2)))
+          (define (row-project row)
+            (cond
+              [(empty? row) '()]
+              [else
+               (cons (if (empty? (rest row))
+                         (translate (first row))
+                         (first row))
+                     (row-project (rest row)))])))
+    (make-db (join-schema schema-1 schema-2)
+             (foldr (lambda (r base) (cons (row-project r) base))
+                    '() content-1))))
+
+; Schema Schema -> Schema
+; Produce a schema like s1 but with last cell replaced with its
+; corresponding cell in s2
+(define (join-schema s1 s2)
+  (cond
+    [(empty? s1) '()]
+    [else
+     (cons (if (empty? (rest s1))
+               (second s2)
+               (first s1))
+           (join-schema (rest s1) s2))]))
+
+; DB DB -> DB
+(check-expect (db-content (multi-join school-db multi-presence-db))
+              school+multi-presence-content)
+(define (multi-join db-1 db-2)
+  (local
+      ((define schema-1 (db-schema db-1))
+       (define schema-2 (db-schema db-2))
+       (define content-1 (db-content db-1))
+       (define content-2 (db-content db-2))
+
+       ; [List-of Any] Any -> [List-of Any]
+       (define (replace-last row s)
+         (cond
+           [(empty? row) '()]
+           [else
+            (cons (if (empty? (rest row))
+                      s
+                      (first row))
+                  (replace-last (rest row) s))]))
+
+       ; Cell -> [List-of Row]
+       (define (translations r)
+         (cond
+           [(empty? r) '()]
+           [else
+            (if (empty? (rest r))
+                (filter (lambda (p) (equal? (first p) (first r))) content-2)
+                (translations (rest r)))]))
+
+       ; Row -> [List-of Row]
+       (define (row-project row)
+         (foldr (lambda (i base) (cons (replace-last row (second i)) base))
+                '() (translations row))))
+
+    (make-db (join-schema schema-1 schema-2)
+             (foldr (lambda (r base) (append (row-project r) base))
+                    '() content-1))))
+
+;; [05-06-2025] NOTE: Maybe, this can be improved to use less computation.
