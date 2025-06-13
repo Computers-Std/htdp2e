@@ -97,7 +97,7 @@
                       (first row))
                   (replace-last (rest row) s))]))
 
-       ; Cell -> [List-of Row]
+       ; Row -> [List-of Row]
        (define (translations r)
          (cond
            [(empty? r) '()]
@@ -115,4 +115,4 @@
              (foldr (lambda (r base) (append (row-project r) base))
                     '() content-1))))
 
-;; [05-06-2025] NOTE: Maybe, this can be improved to use less computation.
+;; [05-06-2025] TODO: Maybe, this can be improved to use less computation.
