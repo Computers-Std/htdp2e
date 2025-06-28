@@ -31,6 +31,7 @@
 
 ; Table -> Number
 ; finds the smallest index for a root of table (assuming the table is sorted)
+; NOTE :: Assuming the "length" gives length+1 items
 (check-expect (find-binary table1) 3)
 (check-satisfied (find-binary table2) (lambda (i) (or (= i 2) (= i 5))))
 (define (find-binary t)
